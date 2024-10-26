@@ -28,12 +28,13 @@ The data used for generating the main results of the study are compiled into the
 
 ### To compile the data
 
-- [01-getacled.r](01-getacled.r): download and store conflict data
-- [02-getrainfall.r](02-getrainfall.r): download and store rainfall data
+- [01-getprec.r](01-getprec.r): download and store precipitation data
+- [02-gettmax.r](02-gettmax.r): download and store temperature data
 - [03-getcalendar.r](03-getcalendar.r): download and store harvest calendar data
-- [04-getspam.r](04-getspam.r): download and store rice harvest area data
-- [05-combine.r](05-combine.r): combine the crop harvest and conflict datasets
-- [06-masterdata.r](06-masterdata.r): some more data wrangling to finalize the dataset
+- [04-getspam.r](04-getspam.r): download and store harvest area data
+- [05-getacled.r](05-getacled.r): download and store conflict data
+- [06-climatecrops.r](06-climatecrops.r): combine climate and crops data
+
 
 The replication materials do not include the downloaded data. However, the links to the data and brief instructions on how to download and store them are provided in the corresponding R scripts.
 

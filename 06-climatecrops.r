@@ -54,26 +54,14 @@ reg_out <- function(y,x){
   return(list(b,s,p))
 }
 
-hac_out <- function(y,x){
-  tr <- 1:length(y)
-  r <- lm(y~x+tr)
-  b <- coeftest(r,vcov.=vcovHAC(r))["x","Estimate"]
-  s <- coeftest(r,vcov.=vcovHAC(r))["x","t value"]
-  p <- coeftest(r,vcov.=vcovHAC(r))["x","Pr(>|t|)"]
-  return(list(b,s,p))
-}
-
-
 # load crops
-load("../data/crops/nelson/calendar.RData")
-load("../data/crops/spam/spam_comb.RData")
+load("data/calendar.RData")
+load("data/spam.RData")
 
 # load climate
-load("../data/weather/cpc/precipitation.RData")
-load("../data/weather/cpc/temperature.RData")
+load("data/precipitation.RData")
+load("data/temperature.RData")
 
-# load ndvi
-load("../data/ndvi/ndvi.RData")
 
 # fetch oni (enso) index 
 oni_dt <- fread("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt")
@@ -318,59 +306,4 @@ climatecrops_dt$gs_last <- NULL
 
 
 save(climatecrops_dt,file="data/climatecrops.RData")
-
-
-## the following code adds nearest most exposed cells to the data
-
-subset_dt <- unique(climatecrops_dt[,.(x,y,crop,area10=area/10000,gs_tc)])
-subset_dt[,exposure:=area10*gs_tc]
-
-sub_dt <- subset_dt[,.(x,y,z=exposure)]
-
-sub_pt <- st_as_sf(sub_dt,coords=c("x","y"),remove=F)
-
-agg_pt <- aggregate(sub_pt,sub_pt,FUN=max,join=function(x,y) st_is_within_distance(x,y,dist=0.71,remove_self=T))
-
-coords <- st_coordinates(agg_pt)
-
-agg_dt <- data.table(agg_pt)
-agg_dt[,`:=`(x1=coords[,1],y1=coords[,2])]
-agg_dt$geometry <- NULL
-
-agg_dt <- agg_dt[,.(x=x1,y=y1,x_adj=x,y_adj=y)]
-
-
-sub_dt <- merge(sub_dt,agg_dt,by=c("x","y"))
-
-sub_dt[,cell_id:=.I]
-
-subset_dt <- sub_dt[,.(x=x_adj,y=y_adj,cell_id)]
-
-
-climatecropsadj_dt <- climatecrops_dt[,.(x,y,date,crop_a=crop,area_a=area,gs_tc_a=gs_tc,oni_crop_a=oni_crop,gs_a=gs,harv_a=harv)]
-
-
-sub_dt <- sub_dt[complete.cases(sub_dt)]
-subset_dt <- subset_dt[complete.cases(subset_dt)]
-
-subsetadj_dt <- merge(subset_dt,climatecropsadj_dt,by=c("x","y"))
-
-setnames(subsetadj_dt,c("x","y"),c("x_adj","y_adj"))
-
-subsetadj_dt <- subsetadj_dt[order(cell_id,x_adj,y_adj,date)]
-
-subadj_dt <- merge(sub_dt[,.(x,y,cell_id)],subsetadj_dt,by="cell_id")
-
-climatecrops_dt <- merge(climatecrops_dt,subadj_dt,by=c("x","y","date"),all.x=T)
-
-
-climatecrops_dt[is.na(cell_id)]$crop_a <- "none"
-climatecrops_dt[is.na(cell_id)]$area_a <- 0
-climatecrops_dt[is.na(cell_id)]$gs_tc_a <- 0
-climatecrops_dt[is.na(cell_id)]$oni_crop_a <- 0
-climatecrops_dt[is.na(cell_id)]$gs_a <- 0
-climatecrops_dt[is.na(cell_id)]$harv_a <- 0
-
-
-save(climatecrops_dt,file="data/climatecrops_alt.RData")
 
