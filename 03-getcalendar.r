@@ -264,7 +264,7 @@ gs_lng_dt <- merge(plant_srt_dt[],harvest_end_dt,by=c("x","y","mo","Month"))
 gs_lng_dt[,`:=`(Maize_gs_lng=ifelse(Maize_plant_srt-Maize_harvest_end<0 | Maize_harvest_end==1,1,0),Sorghum_gs_lng=ifelse(Sorghum_plant_srt-Sorghum_harvest_end<0 | Sorghum_harvest_end==1,1,0),Millet_gs_lng=ifelse(Millet_plant_srt-Millet_harvest_end<0 | Millet_harvest_end==1,1,0),Rice_gs_lng=ifelse(Rice_plant_srt-Rice_harvest_end<0 | Rice_harvest_end==1,1,0),Wheat.Winter_gs_lng=ifelse(Wheat.Winter_plant_srt-Wheat.Winter_harvest_end<0 | Wheat.Winter_harvest_end==1,1,0))]
 
 
-save(plant_srt_dt,plant_mid_dt,plant_end_dt,harvest_srt_dt,harvest_mid_dt,harvest_end_dt,gs_srt_dt,gs_mid_dt,gs_lng_dt,file="calendar.RData")
+save(plant_srt_dt,plant_mid_dt,plant_end_dt,harvest_srt_dt,harvest_mid_dt,harvest_end_dt,gs_srt_dt,gs_mid_dt,gs_lng_dt,file="data/calendar.RData")
 
 
 

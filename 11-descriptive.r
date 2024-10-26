@@ -53,7 +53,6 @@ sf_use_s2(TRUE)
 load("data/climatecropsconflict.RData")
 
 
-
 # Fig.2 - conflict ----
 
 conflict_dt <- climatecropsconflict_dt[,.(incidents=sum(incidents)),by=.(x,y,type,civilian_targeting)]
@@ -69,7 +68,6 @@ sum_dt <- sum_dt[,`incidents/cell`:=incidents/cells]
 sum_dt <- sum_dt[order(conflict,date)]
 
 sum_lg <- melt(sum_dt,id.vars=c("conflict","date"))
-
 
 # generate the maps
 gg_conflict1 <- ggplot(data = africa) +
@@ -113,12 +111,10 @@ gg_tsconflict2 <- ggplot(sum_dt[conflict=="two-sided"],aes(x=date,y=incidents))+
   theme_minimal_hgrid()+
   theme(plot.title.position="plot",panel.background = element_rect(color=NA,fill="white"),plot.background = element_rect(color=NA,fill="white"),axis.text=element_text(size=10,color="dimgray"),panel.grid.major.y = element_line(linewidth=.4,linetype=3,color="dimgray"),panel.spacing=unit(1,"lines"),axis.ticks = element_blank(),axis.line.x=element_blank(),axis.title=element_text(size=10),plot.subtitle=element_text(size=10))
 
-
 gg_conflict_combined <- plot_grid(gg_conflict1,gg_conflict2,gg_tsconflict1,gg_tsconflict2,align="none",axis="none",ncol=2,rel_heights=c(19,10))
 
-gg_conflict_combined
-
 ggsave("figures/fig2_conflict.png",gg_conflict_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
+ggsave("figures/fig2_conflict.eps",gg_conflict_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 
 
 
@@ -133,7 +129,7 @@ ggc <- ggplot(sum_lg,aes(x=date,y=value,group=variable))+
   theme(panel.grid.major=element_line(linetype=3),plot.subtitle=element_text(size=12),axis.ticks=element_blank(),axis.title = element_blank(),axis.text=element_text(size=10),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA),plot.title.position="plot",strip.text = element_text(size=10,hjust=0))
 
 ggsave("figures/figc1_conflict_series.png",ggc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
-
+ggsave("figures/figc1_conflict_series.eps",ggc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 
 
 
@@ -170,8 +166,6 @@ gg2 <- ggplot(data=africa) +
   theme_void()+
   theme(axis.line.x=element_blank(),axis.line.y=element_blank(),axis.title = element_blank(),axis.text = element_blank(),legend.title=element_text(size=9),legend.text=element_text(size=8,hjust=0.5),legend.position="inside",legend.position.inside=c(.2,.3),legend.key.height=unit(.15,"in"),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA),plot.title.position="plot")
 
-
-
 gg1h <- ggplot(sub0_dt,aes(x=area10)) +
   geom_histogram(binwidth=.25,boundary=0,color="white",fill="dimgray",linewidth=.2,na.rm=T)+
   scale_x_continuous(labels=c("0","1","2","3","4","5+"))+
@@ -186,19 +180,13 @@ gg2h <- ggplot(sub_dt[gs_tc>0],aes(x=gs_tc)) +
   theme_minimal_hgrid()+
   theme(plot.title.position="plot",panel.background = element_rect(color=NA,fill="white"),plot.background = element_rect(color=NA,fill="white"),axis.text=element_text(size=10,color="dimgray"),panel.grid.major.y = element_line(linewidth=.4,linetype=3,color="dimgray"),panel.spacing=unit(1,"lines"),axis.ticks = element_blank(),axis.line.x=element_blank(),axis.title=element_text(size=10),plot.subtitle=element_text(size=10))
 
-
 gg_croplands_combined <- plot_grid(gg1,gg2,gg1h,gg2h,align="none",axis="none",ncol=2,rel_heights=c(19,10))
 
 ggsave("figures/fig3_croplands.png",gg_croplands_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
-
-
-
-
-
+ggsave("figures/fig3_croplands.eps",gg_croplands_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 
 
 # Fig.C2 - crops and harvest ----
-
 
 har_dt <- unique(climatecropsconflict_dt[civilian_targeting=="Civilian_targeting" & elnino_year==2020 & harv==1,.(area10=area/10000),by=.(x,y,month)])
 
@@ -234,7 +222,6 @@ gg2 <- ggplot(data=africa) +
   theme_void()+
   theme(axis.line.x=element_blank(),axis.line.y=element_blank(),axis.title = element_blank(),axis.text = element_blank(),legend.position="none",panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA),plot.title.position="plot")
 
-
 gg1h <- ggplot(har_dt,aes(x=crop,color=crop,fill=crop)) +
   geom_bar()+
   scale_color_viridis_d(option="turbo",limits=c("rice","maize","wheat","millet","sorghum"),begin=.2,guide="none")+
@@ -250,12 +237,10 @@ gg2h <- ggplot(har_dt,aes(x=month,color=month,fill=month)) +
   labs(subtitle="Cells")+
   theme(axis.ticks=element_blank(),axis.title=element_blank(),axis.text.x=element_text(color="black",size=8,hjust=0.5),axis.text.y=element_text(color="black",size=8,hjust=1),plot.subtitle=element_text(size=10),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA),plot.margin=unit(c(2,8,0,5),"pt"),plot.title.position = "plot")
 
-
 gg_harvest_combined <- plot_grid(gg1,gg2,gg1h,gg2h,align="none",axis="none",ncol=2,rel_heights=c(19,10))
 
 ggsave("figures/figc2_cropsharvest.png",gg_harvest_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
-
-
+ggsave("figures/figc2_cropsharvest.eps",gg_harvest_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 
 
 # Fig.4 - enso/oni ----
@@ -282,7 +267,7 @@ gg_enso <- ggplot()+
   theme(plot.title.position="plot",panel.background = element_rect(color=NA,fill="white"),plot.background = element_rect(color=NA,fill="white"),axis.text=element_text(size=10,color="dimgray"),panel.grid.major.y = element_line(linewidth=.4,linetype=3,color="dimgray"),panel.spacing=unit(1,"lines"),axis.ticks = element_blank(),axis.line.x=element_blank(),axis.title=element_text(size=12),plot.subtitle=element_text(size=12))
 
 ggsave("figures/fig4_enso.png",gg_enso,width=6.5,height=6.5*9/16,dpi="retina")
-
+ggsave("figures/fig4_enso.eps",gg_enso,width=6.5,height=6.5*9/16,dpi="retina")
 
 
 # Fig.A1 - teleconnections ----
@@ -323,7 +308,6 @@ gg2 <- ggplot(data=africa) +
   theme(axis.line.x=element_blank(),axis.line.y=element_blank(),axis.title = element_blank(),axis.text = element_blank(),legend.title=element_text(size=9),legend.text=element_text(size=8,hjust=0.5),legend.position="bottom",legend.key.height=unit(.1,"in"),legend.key.width=unit(.55,"in"),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA))+
   guides(color=guide_colorbar(title="Proportion of months in a growing season",title.position="top",label.position="bottom",nrow=1))
 
-
 gg1h <- ggplot(sub1_dt[gs_tcp>0],aes(x=gs_tcp)) +
   geom_histogram(binwidth=.05,color="white",fill="darkgray",na.rm=T,linewidth=.2,boundary=0.05)+
   scale_x_continuous(breaks=seq(0,1,.2),limits=c(0,1))+
@@ -337,12 +321,10 @@ gg2h <- ggplot(sub1_dt[gs_tct>0],aes(x=gs_tct)) +
 gg_tc <- plot_grid(gg1,gg2,gg1h,gg2h,align="v",axis="none",ncol=2,rel_heights=c(5,2))
 
 ggsave("figures/figa1_teleconnections.png",gg_tc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
-
+ggsave("figures/figa1_teleconnections.eps",gg_tc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 
 
 # Fig C3 - weather impact ----
-
-# Fig.4 - teleconnections ----
 
 gg1 <- ggplot(data=africa) +
   geom_sf(color=NA,fill="white",linewidth=.1)+
@@ -361,7 +343,6 @@ gg1 <- ggplot(data=africa) +
   theme(axis.line.x=element_blank(),axis.line.y=element_blank(),axis.title = element_blank(),axis.text = element_blank(),legend.title=element_text(size=9),legend.text=element_text(size=8,hjust=0.5),legend.position="bottom",legend.key.height=unit(.1,"in"),legend.key.width=unit(.55,"in"),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA))+
   guides(color=guide_colorbar(title="Growing season change in precipitation (mm/day)",title.position="top",label.position="bottom",nrow=1))
 
-
 gg2 <- ggplot(data=africa) +
   geom_sf(color=NA,fill="white",linewidth=.1)+
   geom_point(data=sub_dt[gs_tc>0 & area10>0],aes(x=x,y=y,color=gs_tc_tmax,fill=gs_tc_tmax,size=area10),shape=22,stroke=.1,na.rm=T)+
@@ -379,7 +360,6 @@ gg2 <- ggplot(data=africa) +
   theme(axis.line.x=element_blank(),axis.line.y=element_blank(),axis.title = element_blank(),axis.text = element_blank(),legend.title=element_text(size=9),legend.text=element_text(size=8,hjust=0.5),legend.position="bottom",legend.key.height=unit(.1,"in"),legend.key.width=unit(.55,"in"),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA))+
   guides(color=guide_colorbar(title="Growing season change in max temperature (C)",title.position="top",label.position="bottom",nrow=1))
 
-
 gg1h <- ggplot(sub_dt[gs_tc>0],aes(x=gs_tc_prec)) +
   geom_histogram(binwidth=.1,color="white",fill="darkgray",na.rm=T,linewidth=.2,boundary=.1)+
   scale_x_continuous(breaks=seq(-.8,.8,.2),limits=c(-.8,.8))+
@@ -390,10 +370,8 @@ gg2h <- ggplot(sub_dt[gs_tc>0],aes(x=gs_tc_tmax)) +
   scale_x_continuous(breaks=seq(-.8,.8,.2),limits=c(-.8,.8))+
   theme(axis.ticks=element_blank(),axis.title=element_blank(),axis.text.x=element_text(color="black",size=8,hjust=0.5),axis.text.y=element_blank(),panel.background=element_rect(fill="white",color=NA),title=element_text(color="black",size=9),plot.background=element_rect(fill="white",color=NA),plot.margin=unit(c(2,8,0,5),"pt"))
 
-
 gg_tc <- plot_grid(gg1,gg2,gg1h,gg2h,align="v",axis="none",ncol=2,rel_heights=c(5,2))
 
 ggsave("figures/figc3_weatherimpact.png",gg_tc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
-
-
+ggsave("figures/figc3_weatherimpact.eps",gg_tc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 

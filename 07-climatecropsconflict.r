@@ -10,20 +10,15 @@ library(rnaturalearthdata)
 rm(list=ls())
 gc()
 
-world <- ne_countries(returnclass="sf",scale="large")
+
 africa <- ne_countries(returnclass="sf",scale="large",continent="Africa")
+africa <- st_set_crs(africa,"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 
-crs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-
-world <- st_set_crs(world,crs)
-africa <- st_set_crs(africa,crs)
 
 "%!in%" <- Negate("%in%")
 
-
 load("data/climatecrops.RData")
-
-load("../data/conflicts/acled/acled_africa_2024.RData")
+load("data/conflict.RData")
 
 
 # conflict ----

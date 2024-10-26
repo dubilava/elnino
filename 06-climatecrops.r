@@ -2,44 +2,16 @@ library(data.table)
 library(sf)
 library(stringr)
 library(zoo)
-library(lmtest)
-library(sandwich)
 library(rnaturalearth)
 library(rnaturalearthdata)
 
 rm(list=ls())
 gc()
 
-world <- ne_countries(returnclass="sf",scale="large")
+# load the Africa map
 africa <- ne_countries(returnclass="sf",scale="large",continent="Africa")
-europe <- ne_countries(returnclass="sf",scale="large",continent="Europe")
-asia <- ne_countries(returnclass="sf",scale="large",continent="Asia")
 
 crs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-
-
-sf_use_s2(FALSE)
-
-world <- st_set_crs(world,crs)
-africa <- st_set_crs(africa,crs)
-europe <- st_set_crs(europe,crs)
-asia <- st_set_crs(asia,crs)
-
-lakes <- ne_download(returnclass="sf",scale="large",type="lakes",category="physical")
-lakes <- st_set_crs(lakes,crs)
-lakes <- st_make_valid(lakes)
-lakes <- st_intersection(africa,lakes)
-
-rivers <- ne_download(returnclass="sf",scale="large",type="rivers_lake_centerlines",category="physical")
-rivers <- st_set_crs(rivers,crs)
-rivers <- st_make_valid(rivers)
-rivers <- st_intersection(africa,rivers)
-
-ocean <- ne_download(returnclass="sf",scale="large",type="ocean",category="physical")
-ocean <- st_set_crs(ocean,crs)
-
-sf_use_s2(TRUE)
-
 
 enso_yrs <- 1979:2023
 
@@ -120,7 +92,7 @@ weather_dt <- weather_dt[order(x,y,year,mo)]
 climate_dt <- merge(weather_dt,oni_dt,by="elnino_year")
 
 # combine croplands and calendars
-crops_dt <- merge(gs_mid_dt,spam_comb_dt,by=c("x","y"))
+crops_dt <- merge(gs_mid_dt,spam_dt,by=c("x","y"))
 
 crops_dt[,crop:=substring(colnames(crops_dt[,.(area_maize,area_sorghum,area_millet,area_rice,area_wheat)])[max.col(crops_dt[,.(area_maize,area_sorghum,area_millet,area_rice,area_wheat)],ties.method="first")],first=6)]
 
@@ -300,10 +272,7 @@ climatecrops_dt <- climatecrops_dt[order(country,x,y,year,mo)]
 climatecrops_dt[,`:=`(gs_prec_year=na.locf(gs_prec_year,fromLast=T),gs_tmax_year=na.locf(gs_tmax_year,fromLast=T)),by=.(x,y)]
 climatecrops_dt[,`:=`(gs_prec_year=na.locf(gs_prec_year,fromLast=F),gs_tmax_year=na.locf(gs_tmax_year,fromLast=F)),by=.(x,y)]
 
-
 climatecrops_dt$gs_temp <- NULL
-climatecrops_dt$gs_last <- NULL
-
 
 save(climatecrops_dt,file="data/climatecrops.RData")
 

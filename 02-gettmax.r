@@ -56,6 +56,6 @@ for(r in 1:length(yr_vec)){
 
 tmax_dt <- data.table(Reduce(rbind,yrs))
 
-save(tmax_dt,file="temperature.RData")
+save(tmax_dt,file="data/temperature.RData")
 
 

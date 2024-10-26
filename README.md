@@ -34,19 +34,18 @@ The data used for generating the main results of the study are compiled into the
 - [04-getspam.r](04-getspam.r): download and store harvest area data
 - [05-getacled.r](05-getacled.r): download and store conflict data
 - [06-climatecrops.r](06-climatecrops.r): combine climate and crops data
-
-
-The replication materials do not include the downloaded data. However, the links to the data and brief instructions on how to download and store them are provided in the corresponding R scripts.
-
+  * the compiled data not stored in the replication material for its large size, but it can be replicated by running this script.
+- [07-climatecropsconflict.r](07-climatecropsconflict.r): add conflict data to the combined climate and crops data
+  * the compiled data not stored in the replication material for its large size, but it can be replicated by running this script.
+- [08-climatecropsconflict_agri.r](07-climatecropsconflict.r): add agrarian conflict data to the combined climate and crops data
+  * the compiled data not stored in the replication material for its large size, but it can be replicated by running this script.
 
 ### To replicate the results
 
-- [11-descriptive.r](11-descriptive.r): Table 2, Figures 1-3, Appendix Figures B1-B2
-- [12-mainresults.r](12-mainresults.r): Table 3, Figures 4-7, Appendix Tables A1-A2 and A4-A7, Appendix Figures B3-B4 and B6
-- [13-specchart.r](13-specchart.r): Appendix Figure B5
-- [14-smallres.r](14-smallres.r): Appendix Table A3*
-
-*Note: Appendix Table A3 generates the regression results similar to the main results but using 0.5-degree cells (instead of 1.0-degree cells) as the geographic unit of observation. The dataset is compiled into [masterdata05.RData](masterdata05.RData) file using steps similar to that of the main dataset.
+- [11-descriptive.r](11-descriptive.r): Figures 2-4 and Online Appendix Figures
+- [12-results.r](12-results.r): Tables 1-3, Figure 5
+- [13-results_agri.r](13-results_agri.r): Table 4
+- [14-robust.r](14-robust.r): Online Appendix Tables
 
 
 ## License

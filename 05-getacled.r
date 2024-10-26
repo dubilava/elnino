@@ -13,7 +13,7 @@ Sys.setenv(ACLED_ACCESS_KEY="<your_access_key>")
 
 acled_dt <- as.data.table(acled.api(region=c(1:5),all.variables=T))
 
-save(acled_dt,file="conflict.RData")
+save(acled_dt,file="data/conflict.RData")
 
 
 # subset of incidents with "agrarian" term in the notes
@@ -23,5 +23,5 @@ acled_dt[,check:=str_detect(notes,paste0("\\b",c("farm","farms","farmer","farmer
 subset_dt <- acled_dt[check==T]
 subset_dt$check <- NULL
 
-save(subset_dt,file="conflict_agri.RData")
+save(subset_dt,file="data/conflict_agri.RData")
 

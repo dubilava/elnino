@@ -19,35 +19,6 @@ gc()
 
 "%!in%" <- Negate("%in%")
 
-world <- ne_countries(returnclass="sf",scale="large")
-africa <- ne_countries(returnclass="sf",scale="large",continent="Africa")
-europe <- ne_countries(returnclass="sf",scale="large",continent="Europe")
-asia <- ne_countries(returnclass="sf",scale="large",continent="Asia")
-
-crs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-
-sf_use_s2(FALSE)
-
-world <- st_set_crs(world,crs)
-africa <- st_set_crs(africa,crs)
-europe <- st_set_crs(europe,crs)
-asia <- st_set_crs(asia,crs)
-
-lakes <- ne_download(returnclass="sf",scale="large",type="lakes",category="physical")
-lakes <- st_set_crs(lakes,crs)
-lakes <- st_make_valid(lakes)
-lakes <- st_intersection(africa,lakes)
-
-rivers <- ne_download(returnclass="sf",scale="large",type="rivers_lake_centerlines",category="physical")
-rivers <- st_set_crs(rivers,crs)
-rivers <- st_make_valid(rivers)
-rivers <- st_intersection(africa,rivers)
-
-ocean <- ne_download(returnclass="sf",scale="large",type="ocean",category="physical")
-ocean <- st_set_crs(ocean,crs)
-
-sf_use_s2(TRUE)
-
 
 # these bits are for tables
 pstars <- function(ps){
@@ -128,7 +99,6 @@ impact3b2(climatecropsconflict_dt[type=="Political violence" & civilian_targetin
 impact3b2(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"])
 
 
-
 ## B3: no weather ----
 impact3b3 <- function(x){
   r <- feols(incidents~area10:oni_crop_prec:gs_tc:ph3+area10:oni_crop_prec:gs_tc:I(1-ph3) | xy + country^yearmo, data=x,vcov=conley(500)~x+y)
@@ -151,8 +121,6 @@ modelsummary(list(reg3_pc,reg3_pn),estimate="{estimate}{stars}",stars=c('*'=.1,'
 impact3b3(climatecropsconflict_dt[type=="Political violence" & civilian_targeting=="Civilian_targeting"])
 
 impact3b3(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"])
-
-
 
 
 # R2 - exposure measures ----
@@ -257,7 +225,6 @@ impact3b7(climatecropsconflict_dt[type=="Political violence" & civilian_targetin
 impact3b7(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"])
 
 
-
 ## B8: temperature ----
 impact3b8 <- function(x){
   r <- feols(incidents~area10:oni_crop:gs_tct:ph3+area10:oni_crop:gs_tct:I(1-ph3)+prec+tmax | xy + country^yearmo, data=x,vcov=conley(500)~x+y)
@@ -280,7 +247,6 @@ modelsummary(list(reg3_pc,reg3_pn),estimate="{estimate}{stars}",stars=c('*'=.1,'
 impact3b8(climatecropsconflict_dt[type=="Political violence" & civilian_targeting=="Civilian_targeting"])
 
 impact3b8(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"])
-
 
 
 # R4 - conflict incidence ----

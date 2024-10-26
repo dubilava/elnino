@@ -56,5 +56,5 @@ for(r in 1:length(yr_vec)){
 
 prec_dt <- data.table(Reduce(rbind,yrs))
 
-save(prec_dt,file="precipitation.RData")
+save(prec_dt,file="data/precipitation.RData")
 

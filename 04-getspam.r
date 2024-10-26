@@ -70,4 +70,4 @@ colnames(wheat_dt) <- c("x","y","area_wheat")
 
 spam_dt <- Reduce(function(...) merge(...,by=c("x","y"),all=T),list(maize_dt,sorghum_dt,millet_dt,rice_dt,wheat_dt))
 
-save(spam_dt,file="spam.RData")
+save(spam_dt,file="data/spam.RData")

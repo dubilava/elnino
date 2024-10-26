@@ -5,6 +5,7 @@ library(ggplot2)
 library(ggforce)
 library(ggnewscale)
 library(cowplot)
+library(Cairo)
 library(viridis)
 library(stringr)
 library(sf)
@@ -18,35 +19,6 @@ rm(list=ls())
 gc()
 
 "%!in%" <- Negate("%in%")
-
-world <- ne_countries(returnclass="sf",scale="large")
-africa <- ne_countries(returnclass="sf",scale="large",continent="Africa")
-europe <- ne_countries(returnclass="sf",scale="large",continent="Europe")
-asia <- ne_countries(returnclass="sf",scale="large",continent="Asia")
-
-crs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-
-sf_use_s2(FALSE)
-
-world <- st_set_crs(world,crs)
-africa <- st_set_crs(africa,crs)
-europe <- st_set_crs(europe,crs)
-asia <- st_set_crs(asia,crs)
-
-lakes <- ne_download(returnclass="sf",scale="large",type="lakes",category="physical")
-lakes <- st_set_crs(lakes,crs)
-lakes <- st_make_valid(lakes)
-lakes <- st_intersection(africa,lakes)
-
-rivers <- ne_download(returnclass="sf",scale="large",type="rivers_lake_centerlines",category="physical")
-rivers <- st_set_crs(rivers,crs)
-rivers <- st_make_valid(rivers)
-rivers <- st_intersection(africa,rivers)
-
-ocean <- ne_download(returnclass="sf",scale="large",type="ocean",category="physical")
-ocean <- st_set_crs(ocean,crs)
-
-sf_use_s2(TRUE)
 
 
 # these bits are for tables
@@ -62,7 +34,7 @@ gm <- list(list("raw"="nobs","clean"="Obs.","fmt"=f2),
 
 
 # load the data
-load("data/climatecropsconflict_alt.RData")
+load("data/climatecropsconflict.RData")
 
 
 # some minor data wranglings ----
@@ -71,21 +43,16 @@ load("data/climatecropsconflict_alt.RData")
 climatecropsconflict_dt <- climatecropsconflict_dt[elnino_year%!in%c("1996","2024")]
 
 ## area in 10,000 ha and postharvest period (3 months)
-climatecropsconflict_dt[,`:=`(area10=area/10000,ph3=ifelse(harv%in%1:3,1,0))]#,area10_a=area_a/10000,ph3_a=ifelse(harv_a%in%1:3,1,0))]
+climatecropsconflict_dt[,`:=`(area10=area/10000,ph3=ifelse(harv%in%1:3,1,0))]
 
 ## trend (for no particular reason)
 climatecropsconflict_dt[,trend:=as.numeric(as.factor(yearmo))]
-
 
 ## total number of incidents by conflict category
 climatecropsconflict_dt[,.(sum(incidents)),by=.(type,civilian_targeting)]
 
 
-4386/121691
-
-8879/108256
-
-# Eq.1 ----
+# Eq. 1 / Table 1 ----
 
 impact1 <- function(x){
   r <- feols(incidents~area10:oni_crop:gs_tc+prec+tmax | xy + country^yearmo, data=x,vcov=conley(500)~x+y)
@@ -119,7 +86,7 @@ impact1(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!
 
 
 
-# Eq.2 ----
+# Eq. 2 / Table 2 ----
 
 impact2 <- function(x){
   r <- feols(incidents~area10:oni_crop:gs_tc:ph3+area10:oni_crop:gs_tc:I(1-ph3)+prec+tmax | xy + country^yearmo, data=x,vcov=conley(500)~x+y)
@@ -151,7 +118,7 @@ impact2(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!
 
 
 
-# HM1: weather impact ----
+# Eq. 3 / Table 3 ----
 
 climatecropsconflict_dt[,neg:=ifelse(gs_tc_prec<0 & gs_tc_tmax>0,1,0)]
 climatecropsconflict_dt[,pos:=1-neg]
@@ -198,7 +165,7 @@ impact2cells(climatecropsconflict_dt[type=="Political violence" & civilian_targe
 
 
 
-# HM3: event study ----
+# Eq. 4 / Figure 5 ----
 
 reg5_pc <- feols(incidents~area10:oni_cropevent:gs_tc:i(harv,keep=c(1:12))+prec+tmax | xy+country^yearmo,data=climatecropsconflict_dt[type=="Political violence" & civilian_targeting=="Civilian_targeting"],vcov=conley(500)~x+y)
 
@@ -234,10 +201,10 @@ gg <- ggplot(effect_dt,aes(x=Period,y=Effect))+
   geom_pointrange(aes(ymin=Effect-1.96*SE,ymax=Effect+1.96*SE),position=position_dodge(width=.4),color="black",fill="black",shape=21,size=.5,stroke=.2,linewidth=.6)+
   annotate("rect",xmin=4.5,xmax=7.5,ymin=-6.5,ymax=3.5,color="dimgray",fill=NA,linetype=2,linewidth=.4)+
   facet_wrap(.~Conflict,ncol=2,scales="free",labeller = label_wrap_gen(multi_line=F))+
-  labs(x="Month from harvest",y="%\u0394 (relative to baseline conflict)")+
+  labs(x="Month from harvest",y="% chg (relative to baseline conflict)")+
   theme_minimal_hgrid()+
   theme(plot.title.position="plot",panel.background = element_rect(color=NA,fill="white"),plot.background = element_rect(color=NA,fill="white"),axis.text=element_text(size=10,color="dimgray"),panel.grid.major.y = element_line(linewidth=.4,linetype=3,color="dimgray"),panel.spacing=unit(1,"lines"),axis.ticks = element_blank(),axis.line.x=element_blank(),axis.title=element_text(size=12),plot.subtitle=element_text(size=12))
 
 ggsave("figures/fig5_event.png",gg,width=6.5,height=6.5*9/16,dpi="retina")
-
+ggsave("figures/fig5_event.eps",gg,width=6.5,height=6.5*9/16,dpi="retina")
 
