@@ -35,7 +35,6 @@ gm <- list(list("raw"="nobs","clean"="Obs.","fmt"=f2),
 # load the data
 load("data/climatecropsconflict_agri.RData")
 
-
 # some minor data wranglings ----
 
 ## make sure there are no 'extra' years
@@ -50,7 +49,6 @@ climatecropsconflict_dt[,trend:=as.numeric(as.factor(yearmo))]
 
 ## total number of incidents by conflict category
 climatecropsconflict_dt[,.(sum(incidents)),by=.(type,civilian_targeting)]
-
 
 
 # Eq.2 ----
@@ -71,18 +69,9 @@ reg2_pc <- feols(incidents~area10:oni_crop:gs_tc+area10:oni_crop:gs_tc:ph3+prec+
 
 reg2_pn <- feols(incidents~area10:oni_crop:gs_tc+area10:oni_crop:gs_tc:ph3+prec+tmax | xy + country^yearmo, data=climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"],vcov=conley(500)~x+y)
 
-reg2p_pc <- fepois(incidents~area10:oni_crop:gs_tc+area10:oni_crop:gs_tc:ph3+prec+tmax | xy + country^yearmo, data=climatecropsconflict_dt[type=="Political violence" & civilian_targeting=="Civilian_targeting"],vcov=conley(500)~x+y)
-
-reg2p_pn <- fepois(incidents~area10:oni_crop:gs_tc+area10:oni_crop:gs_tc:ph3+prec+tmax | xy + country^yearmo, data=climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"],vcov=conley(500)~x+y)
-
-
-modelsummary(list(reg2_pc,reg2_pn,reg2p_pc,reg2p_pn),estimate="{estimate}{stars}",stars=c('*'=.1,'**'=.05,'***'=.01),fmt=fmt_sprintf("%.4f"))
-
+modelsummary(list(reg2_pc,reg2_pn),estimate="{estimate}{stars}",stars=c('*'=.1,'**'=.05,'***'=.01),fmt=fmt_sprintf("%.4f"))
 
 impact2(climatecropsconflict_dt[type=="Political violence" & civilian_targeting=="Civilian_targeting"])
 
 impact2(climatecropsconflict_dt[type=="Political violence" & civilian_targeting!="Civilian_targeting"])
-
-
-
 

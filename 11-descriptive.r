@@ -94,7 +94,6 @@ gg_conflict2 <- ggplot(data = africa) +
   theme_void()+
   theme(axis.line.x=element_blank(),axis.line.y=element_blank(),axis.title = element_blank(),axis.text = element_blank(),legend.title=element_text(size=9),legend.text=element_text(size=8,hjust=0.5),legend.position="inside",legend.position.inside=c(.2,.3),legend.key.height=unit(.15,"in"),panel.background=element_rect(fill="white",color=NA),plot.background=element_rect(fill="white",color=NA),plot.title.position="plot")
 
-
 gg_tsconflict1 <- ggplot(sum_dt[conflict=="one-sided"],aes(x=date,y=incidents))+
   geom_line(linewidth=.3,color="black")+
   scale_y_continuous(breaks=seq(0,1200,400))+
@@ -117,7 +116,6 @@ ggsave("figures/fig2_conflict.png",gg_conflict_combined,width=6.5,height=6.5*9/1
 ggsave("figures/fig2_conflict.eps",gg_conflict_combined,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 
 
-
 # Fig.C1 - conflict series ----
 
 ggc <- ggplot(sum_lg,aes(x=date,y=value,group=variable))+
@@ -130,7 +128,6 @@ ggc <- ggplot(sum_lg,aes(x=date,y=value,group=variable))+
 
 ggsave("figures/figc1_conflict_series.png",ggc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
 ggsave("figures/figc1_conflict_series.eps",ggc,width=6.5,height=6.5*9/16*1.5,dpi="retina")
-
 
 
 # Fig.3 - croplands ----
