@@ -1,6 +1,6 @@
 # Replication Material
 
-This repository hosts data and R scripts for the paper "Climate, Crops, and Postharvest Conflict" forthcoming in the American Journal of Agricultural Economics. 
+This repository hosts data and R scripts for the paper "[Climate, Crops, and Postharvest Conflict](https://doi.org/10.1111/ajae.12504)" published in the American Journal of Agricultural Economics. 
 
 
 ## Data
